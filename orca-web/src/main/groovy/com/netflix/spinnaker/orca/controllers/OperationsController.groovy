@@ -205,7 +205,7 @@ class OperationsController {
         } else {
           buildInfo.artifacts = buildArtifactFilter.filterArtifacts(buildInfo.artifacts)
           if (trigger.type == "manual") {
-            trigger.artifacts = buildInfo.artifacts
+            trigger.artifacts = buildInfo.artifacts.collect()
           }
         }
 
@@ -218,6 +218,13 @@ class OperationsController {
           trigger.master as String,
           trigger.job as String
         )
+
+        if (trigger.properties?.artifacts) {
+          if (!trigger.artifacts) {
+            trigger.artifacts = [];
+          }
+          trigger.artifacts += trigger.properties.artifacts
+        }
       }
     } else if (trigger?.registry && trigger?.repository && trigger?.tag) {
       trigger.buildInfo = [
